@@ -1,5 +1,10 @@
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
 from copy import deepcopy
 import math
+import matplotlib
+matplotlib.use('TkAgg')
 
 
 def f(x, t):
@@ -111,6 +116,15 @@ def check(matrix1, matrix2):
 
     return res, norm
 
+def plot_3d_surface(X, Y, Z, title):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(X, Y, Z, cmap='viridis')
+    ax.set_xlabel('X')
+    ax.set_ylabel('T')
+    ax.set_zlabel('Temperature')
+    ax.set_title(title)
+    plt.show()
 
 nx = 3
 m_alpha = 0.5*nx
@@ -180,3 +194,35 @@ res, norm = check(A, start_A)
 print("\n")
 print_matrix(res, 'Невязка')
 print(f'Норма невязки: {norm}')
+
+# Получите значения X, Y и Z после решения
+X, Y = np.meshgrid(x, t)
+Z_explicit = np.array(start_A)
+Z_implicit = np.array(A)
+
+Z_combined = np.concatenate((Z_explicit[:, :, np.newaxis], Z_implicit[:, :, np.newaxis]), axis=2)
+
+# Постройте 3D график для обеих схем на одном графике
+fig_combined = plt.figure()
+ax_combined = fig_combined.add_subplot(111, projection='3d')
+ax_combined.plot_surface(X, Y, Z_combined[:,:,0], cmap='viridis', label='Explicit Scheme')
+ax_combined.plot_surface(X, Y, Z_combined[:,:,1], cmap='viridis', alpha=0.5, label='Implicit Scheme')
+ax_combined.set_xlabel('X')
+ax_combined.set_ylabel('T')
+ax_combined.set_zlabel('Temperature')
+ax_combined.set_title('Combined Schemes')
+ax_combined.legend()
+plt.show()
+
+Z_difference = Z_explicit - Z_implicit
+
+# Постройте 3D график для разности схем
+fig_difference = plt.figure()
+ax_difference = fig_difference.add_subplot(111, projection='3d')
+ax_difference.plot_surface(X, Y, Z_difference, cmap='coolwarm', label='Difference (Explicit - Implicit)')
+ax_difference.set_xlabel('X')
+ax_difference.set_ylabel('T')
+ax_difference.set_zlabel('Temperature Difference')
+ax_difference.set_title('Difference Between Schemes')
+ax_difference.legend()
+plt.show()
