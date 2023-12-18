@@ -117,7 +117,7 @@ def method(A):
 
     print("\nСобственные значения\n")
     res = []
-    for i in range(-100, 90):
+    for i in range(-500, 500):
         x = bisection(i, i+1, p_list)
         if x != 0:
             res.append(x)
@@ -171,7 +171,7 @@ A = [[0, 1, 8, 1],
     [8, 1, 0, 1],
     [1, 0, 1, 0]]
 
-N = 3
+N = 6
 
 P = math.log(N)/math.log(10.0)
 A[0][0] = N + 12

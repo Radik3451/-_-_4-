@@ -19,7 +19,25 @@ def PrintVectors2(x, y, y2, eps):
         print(f"{x[i]:.6f} | {y[i]:.6f} | {y2[i]:.6f} | {eps[i]:.6f}")
     print()
 
-# Явный метод Эйлера и уточненный метод Эйлера
+def func(yn1, tn1, yn, tn, tau):
+    # Здесь определите вашу функцию
+    # Ваше уравнение: yn1 - 0.5 * tau * f(tn1, yn1) - yn - 0.5 * tau * f(tn, yn)
+    return yn1 - 0.5 * tau * df(tn1, yn1) - yn - 0.5 * tau * df(tn, yn)
+
+def derivative(yn1, tn1, tau):
+    # Здесь определите производную вашей функции по yn1
+    # Пример: return 1 - 0.5 * tau * df/dy(tn1, yn1)
+    return 1 - 0.5 * tau * df(tn1, yn1)
+
+def newton_method(initial_guess, tn1, yn, tn, tau, tol=1e-6, max_iter=100):
+    guess = initial_guess
+    iter_count = 0
+
+    while abs(func(guess, tn1, yn, tn, tau)) > tol and iter_count < max_iter:
+        guess = guess - func(guess, tn1, yn, tn, tau) / derivative(guess, tn1, tau)
+        iter_count += 1
+
+    return guess
 h1 = 0.1
 a = 1.0
 b = 2.0
@@ -28,7 +46,7 @@ x = [a + i*h1 for i in range(n)]
 
 answer = [f(xi) for xi in x]
 
-# Явный метод Эйлера
+#метод Трапеций
 y = [1]
 for i in range(1, n):
     y.append(y[i-1] + h1*df(x[i-1], y[i-1]))
@@ -49,7 +67,8 @@ print("Общая погрешность: ", norm, "\n")
 y1 = [0 for i in range (n)]
 y1[0] = 1.0
 for i in range(0, n-1):
-    y1[i+1] = y1[i] + 0.5*h1*(df(x[i],y[i]) + df(x[i+1],y[i+1]))
+    y1[i+1] = newton_method(0.1, x[i+1], y1[i], x[i], h1)
+    # y1[i+1] = y1[i] + 0.5*h1*(df(x[i],y1[i]) + df(x[i+1],y[i+1]))
 
 eps = [0 for i in range(n)]
 for i in range (0,n):
@@ -73,9 +92,7 @@ y2 = [0 for i in range(n)]
 R = [0.0 for i in range(n)]
 y2[0] = 1.0
 for i in range(0, n-2, 2):
-    k1 = df(x[i],y2[i])
-    k2 = df(x[i] + 0.5*h2, y2[i] + 0.5*h2*k1)
-    y2[i+2] = y2[i] + h2*k2
+    y2[i+2] = newton_method(0.1, x[i+2], y2[i], x[i], h2)
 for i in range(2, n, 2):
     R[i] = (y1[i]-y2[i])/(math.pow(r, p) - 1)
     y2[i] = y1[i] + R[i]

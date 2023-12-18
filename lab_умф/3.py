@@ -202,7 +202,6 @@ Z_implicit = np.array(A)
 
 Z_combined = np.concatenate((Z_explicit[:, :, np.newaxis], Z_implicit[:, :, np.newaxis]), axis=2)
 
-# Постройте 3D график для обеих схем на одном графике
 fig_combined = plt.figure()
 ax_combined = fig_combined.add_subplot(111, projection='3d')
 ax_combined.plot_surface(X, Y, Z_combined[:,:,0], cmap='viridis', label='Explicit Scheme')
@@ -214,15 +213,14 @@ ax_combined.set_title('Combined Schemes')
 ax_combined.legend()
 plt.show()
 
-Z_difference = Z_explicit - Z_implicit
+# Z_difference = Z_explicit - Z_implicit
 
-# Постройте 3D график для разности схем
-fig_difference = plt.figure()
-ax_difference = fig_difference.add_subplot(111, projection='3d')
-ax_difference.plot_surface(X, Y, Z_difference, cmap='coolwarm', label='Difference (Explicit - Implicit)')
-ax_difference.set_xlabel('X')
-ax_difference.set_ylabel('T')
-ax_difference.set_zlabel('Temperature Difference')
-ax_difference.set_title('Difference Between Schemes')
-ax_difference.legend()
-plt.show()
+# fig_difference = plt.figure()
+# ax_difference = fig_difference.add_subplot(111, projection='3d')
+# ax_difference.plot_surface(X, Y, Z_difference, cmap='coolwarm', label='Difference (Explicit - Implicit)')
+# ax_difference.set_xlabel('X')
+# ax_difference.set_ylabel('T')
+# ax_difference.set_zlabel('Temperature Difference')
+# ax_difference.set_title('Difference Between Schemes')
+# ax_difference.legend()
+# plt.show()
